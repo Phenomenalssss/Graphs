@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Graphs/Graphs.csproj" />
+  <Project Path="ProgramGraphs/ProgramGraphs.csproj" />
+</Solution>
