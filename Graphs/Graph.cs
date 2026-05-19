@@ -9,30 +9,41 @@
             Console.ResetColor();
         }
 
-        public static void CreateAdjacencyMatrix(int vertexCount, int edgeCount)
+        public static void PrintListOfEdges(List<Tuple<int, int>> edges)
         {
-            vertexCount = Convert.ToInt32(Console.ReadLine());
-            edgeCount = Convert.ToInt32(Console.ReadLine());
-            // Создаем двумерный массив для матрицы смежности
-            int[,] graph = new int[vertexCount, vertexCount];
-            // Добавляем вершины в матрицу смежности
+            foreach (var pair in edges)
+            {
+                ColorPrint($"{pair.Item1} - {pair.Item2}\n", ConsoleColor.Yellow);
+            }
+        }
+
+        public static List<Tuple<int, int>> CreateListOfEdges(int vertexCount, int edgeCount)
+        {
+            List<Tuple<int, int>> edges = new List<Tuple<int, int>>();
+
             for (int i = 0; i < edgeCount; i++)
             {
-                int a = Convert.ToInt32(Console.ReadLine());
-                int b = Convert.ToInt32(Console.ReadLine());
-                a--;
-                b--;
-                graph[a, b] = 1;
-                graph[b, a] = 1;
+                string[] numbers = Console.ReadLine().Split();
+                edges.Add(Tuple.Create(Convert.ToInt32(numbers[0]), Convert.ToInt32(numbers[1])));
             }
-            // Выводим матрицу смежности
-            for (int i = 0; i < vertexCount; i++)
+
+            return edges;
+        }
+
+        public static bool IsComplete(int vertexCount, List<Tuple<int, int>> edges)
+        {
+            HashSet<string> setOfEdges = new HashSet<string>();
+            for (int i = 0; i < edges.Count; i++)
             {
-                for (int j = 0; j < vertexCount; j++)
-                {
-                    Console.Write(" {0}", graph[i, j]);
-                }
-                Console.WriteLine();
+                setOfEdges.Add($"{edges[i].Item1}-{edges[i].Item2}");
+            }
+            if (setOfEdges.Count == vertexCount * (vertexCount - 1) / 2)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 

@@ -86,6 +86,21 @@ namespace ProgramGraphs
                         }
                     case 2:
                         {
+                            Console.Write("Введите количество вершин = ");
+                            int vertexCount = Convert.ToInt32(Console.ReadLine());
+                            Console.Write("Введите количество ребёр = ");
+                            int edgeCount = Convert.ToInt32(Console.ReadLine());
+                            var edges = Graph.CreateListOfEdges(vertexCount, edgeCount);
+                            Console.WriteLine("Список ребёр:");
+                            Graph.PrintListOfEdges(edges);
+                            if (Graph.IsComplete(vertexCount, edges))
+                            {
+                                ColorPrint($"YES\n", ConsoleColor.Green);
+                            }
+                            else
+                            {
+                                ColorPrint($"NO\n", ConsoleColor.Red);
+                            }
                             break;
                         }
                     case 3:
