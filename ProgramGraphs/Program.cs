@@ -59,7 +59,7 @@ namespace ProgramGraphs
                     "1. Проверка матрицы на неориентированность\n" +
                     "2. Полный граф\n" +
                     "3. Рекурсивный алгоритм обхода графа в глубину\n" +
-                    "4. Проверить существование пути от A в B\n" +
+                    "4. Проверить существование пути от A до B\n" +
                     "5. Минимальный путь между двумя вершинами в неориентированном графе\n" +
                     ">> ");
                 int exercise = Convert.ToInt32(Console.ReadLine());
@@ -109,39 +109,47 @@ namespace ProgramGraphs
                             if (File.Exists(path))
                             {
                                 string[] edges = File.ReadAllLines(path);
-                                Console.WriteLine("Данные из файла:");
-                                foreach(var edge in edges)
-                                {
-                                    ColorPrint($"{edge}\n", ConsoleColor.Yellow);
-                                }
-                                int maxVertex = 0;
-                                for (int i = 0; i < edges.Length; i++)
-                                {
-                                    string[] numbers = edges[i].Split("-");
-                                    int a = Convert.ToInt32(numbers[0]);
-                                    int b = Convert.ToInt32(numbers[1]);
-                                    a--;
-                                    b--;
-                                    if (a > maxVertex)
-                                    {
-                                        maxVertex = a;
-                                    }
-                                    if (b > maxVertex)
-                                    {
-                                        maxVertex = b;
-                                    }
-                                }
                                 var graph = Graph.CreateAdjacencyList(edges);
                                 Console.WriteLine("Список смежности:");
                                 Graph.PrintAdjacencyList(graph);
-                                bool[] visited = new bool[maxVertex];
+                                HashSet<int> visited = new HashSet<int>();
                                 Console.Write("Обход в глубину: ");
-                                Graph.DFS(graph, Convert.ToInt32(edges[0].Split("-")[0]), visited);
+                                foreach(var vertex in graph.Keys)
+                                {
+                                    if (!visited.Contains(vertex))
+                                    {
+                                        Graph.DFS(graph, vertex, visited);
+                                    }
+                                }
+                                Console.WriteLine();
                             }
                             break;
                         }
                     case 4:
                         {
+                            string path = @"D:\Phenomenals\University\Построение и анализ алгоритмов\forExerciseThreeIn15LAB.txt";
+                            if (File.Exists(path))
+                            {
+                                string[] edges = File.ReadAllLines(path);
+                                var graph = Graph.CreateAdjacencyList(edges);
+                                Console.WriteLine("Список смежности:");
+                                Graph.PrintAdjacencyList(graph);
+                                Console.Write("Введите вершину A = ");
+                                int A = Convert.ToInt32(Console.ReadLine());
+                                Console.Write("Введите вершину B = ");
+                                int B = Convert.ToInt32(Console.ReadLine());
+                                List<int> pathFromAToB = Graph.GetPath(graph, A, B);
+                                if (pathFromAToB.Count > 0)
+                                {
+                                    ColorPrint($"Путь от {A} до {B} существует\n", ConsoleColor.Green);
+                                    ColorPrint($"Путь: {string.Join(" -> ", pathFromAToB)}\n", ConsoleColor.Yellow);
+                                }
+                                else
+                                {
+                                    ColorPrint($"Путь от {A} до {B} не существует\n", ConsoleColor.Red);
+
+                                }
+                            }
                             break;
                         }
                     case 5:

@@ -86,73 +86,98 @@
             }
         }
 
-        public static List<List<int>> CreateAdjacencyList(string[] edges)
+        public static Dictionary<int, HashSet<int>> CreateAdjacencyList(string[] edges)
         {
-            int maxVertex = 0;
-            for (int i = 0; i < edges.Length; i++)
-            {
-                string[] numbers = edges[i].Split("-");
-                int a = Convert.ToInt32(numbers[0]);
-                int b = Convert.ToInt32(numbers[1]);
-                a--;
-                b--;
-                if (a > maxVertex)
-                {
-                    maxVertex = a;
-                }
-                if (b > maxVertex)
-                {
-                    maxVertex = b;
-                }
-            }
-            List<List<int>> graph = new List<List<int>>();
-            for (int i = 0; i <= maxVertex; i++)
-            {
-                graph.Add(new List<int>());
-            }
+            var graph = new Dictionary<int, HashSet<int>>();
             foreach (var edge in edges)
             {
                 string[] numbers = edge.Split("-");
-                int a = Convert.ToInt32(numbers[0]) - 1;
-                int b = Convert.ToInt32(numbers[1]) - 1;
+                int a = Convert.ToInt32(numbers[0]);
+                int b = Convert.ToInt32(numbers[1]);
 
-                if (!graph[a].Contains(b))
+                if (!graph.ContainsKey(a))
                 {
-                    graph[a].Add(b);
+                    graph[a] = new HashSet<int>();
                 }
-                if (!graph[b].Contains(a))
+                if (!graph.ContainsKey(b))
                 {
-                    graph[b].Add(a);
+                    graph[b] = new HashSet<int>();
                 }
+                graph[a].Add(b);
+                graph[b].Add(a);
             }
             return graph;
         }
 
-        public static void PrintAdjacencyList(List<List<int>> graph)
+        public static void PrintAdjacencyList(Dictionary<int, HashSet<int>> graph)
         {
-            int vertexCount = graph.Count;
-            for (int i = 0; i < vertexCount; i++)
+            foreach (var pair in graph)
             {
-                ColorPrint($"Вершина {i + 1}:", ConsoleColor.Yellow);
-                foreach (var vertex in graph[i])
+                int vertex = pair.Key;
+                HashSet<int> neighbors = pair.Value;
+                ColorPrint($"Вершина {vertex}:", ConsoleColor.Yellow);
+                foreach (var neighbor in neighbors)
                 {
-                    ColorPrint($" {vertex + 1}", ConsoleColor.Yellow);
+                    ColorPrint($" {neighbor}", ConsoleColor.Yellow);
                 }
                 Console.WriteLine();
             }
         }
 
-        public static void DFS(List<List<int>> graph, int v, bool[] visited)
+        public static void DFS(Dictionary<int, HashSet<int>> graph, int v, HashSet<int> visited)
         {
-            visited[v] = true;
+            visited.Add(v);
             ColorPrint($"{v} ", ConsoleColor.Yellow);
             foreach (int to in graph[v])
             {
-                if (!visited[to])
+                if (!visited.Contains(to))
                 {
                     DFS(graph, to, visited);
                 }
             }
+        }
+
+        private static void _DFS(Dictionary<int, HashSet<int>> graph, int v, HashSet<int> visited)
+        {
+            visited.Add(v);
+            foreach (int to in graph[v])
+            {
+                if (!visited.Contains(to))
+                {
+                    _DFS(graph, to, visited);
+                }
+            }
+        }
+
+        public static List<int> GetPath(Dictionary<int, HashSet<int>> graph, int start, int target)
+        {
+            List<int> path = new List<int>();
+            HashSet<int> check = new HashSet<int>();
+            _DFS(graph, start, check);
+            if (!check.Contains(target))
+            {
+                return path;
+            }
+            int current = start;
+            path.Add(current);
+            while(current != target)
+            {
+                foreach(int neighbor in graph[current])
+                {
+                    if (!path.Contains(neighbor))
+                    {
+                        HashSet<int> visited = new HashSet<int>(path);
+                        _DFS(graph, neighbor, visited);
+                        if (visited.Contains(target))
+                        {
+                            current = neighbor;
+                            path.Add(current);
+                            break;
+                        }
+                    }
+                }
+            }
+            return path;
         }
     }
 }
