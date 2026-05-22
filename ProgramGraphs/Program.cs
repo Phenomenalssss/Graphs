@@ -81,7 +81,7 @@ namespace ProgramGraphs
                             }
                             Console.WriteLine("Матрица:");
                             MatrixPrint(matrix);
-                            Graph.CheckingForDisorientation(matrix);
+                            Graph.CheckForDisorientation(matrix);
                             break;
                         }
                     case 2:
@@ -105,6 +105,39 @@ namespace ProgramGraphs
                         }
                     case 3:
                         {
+                            string path = @"D:\Phenomenals\University\Построение и анализ алгоритмов\forExerciseThreeIn15LAB.txt";
+                            if (File.Exists(path))
+                            {
+                                string[] edges = File.ReadAllLines(path);
+                                Console.WriteLine("Данные из файла:");
+                                foreach(var edge in edges)
+                                {
+                                    ColorPrint($"{edge}\n", ConsoleColor.Yellow);
+                                }
+                                int maxVertex = 0;
+                                for (int i = 0; i < edges.Length; i++)
+                                {
+                                    string[] numbers = edges[i].Split("-");
+                                    int a = Convert.ToInt32(numbers[0]);
+                                    int b = Convert.ToInt32(numbers[1]);
+                                    a--;
+                                    b--;
+                                    if (a > maxVertex)
+                                    {
+                                        maxVertex = a;
+                                    }
+                                    if (b > maxVertex)
+                                    {
+                                        maxVertex = b;
+                                    }
+                                }
+                                var graph = Graph.CreateAdjacencyList(edges);
+                                Console.WriteLine("Список смежности:");
+                                Graph.PrintAdjacencyList(graph);
+                                bool[] visited = new bool[maxVertex];
+                                Console.Write("Обход в глубину: ");
+                                Graph.DFS(graph, Convert.ToInt32(edges[0].Split("-")[0]), visited);
+                            }
                             break;
                         }
                     case 4:
