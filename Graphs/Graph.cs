@@ -20,9 +20,7 @@
         public static List<Tuple<int, int>> CreateListOfEdges(int vertexCount, int edgeCount)
         {
             List<Tuple<int, int>> edges = new List<Tuple<int, int>>();
-
             HashSet<(int, int)> seenEdges = new HashSet<(int, int)>();
-
             for (int i = 0; i < edgeCount; i++)
             {
                 string[] numbers = Console.ReadLine().Split();
@@ -34,7 +32,6 @@
                     edges.Add(Tuple.Create(minEdge, maxEdge));
                 }
             }
-
             return edges;
         }
 
@@ -149,7 +146,7 @@
             }
         }
 
-        public static List<int> GetPath(Dictionary<int, HashSet<int>> graph, int start, int target)
+        public static List<int> GetPathDFS(Dictionary<int, HashSet<int>> graph, int start, int target)
         {
             List<int> path = new List<int>();
             HashSet<int> check = new HashSet<int>();
@@ -177,6 +174,45 @@
                     }
                 }
             }
+            return path;
+        } 
+
+        public static (int[], int[]) BFS(int[,] matrix, int start)
+        {
+            int[] dist = Enumerable.Repeat(int.MaxValue, matrix.GetLength(0)).ToArray();
+            int[] from = Enumerable.Repeat(-1, matrix.GetLength(0)).ToArray();
+            Queue<int> q = new Queue<int>();
+            dist[start] = 0;
+            q.Enqueue(start);
+            while(q.Count != 0)
+            {
+                int v = q.Peek();
+                q.Dequeue();
+                for (int to = 0; to < matrix.GetLength(0); to++)
+                {
+                    if (matrix[v, to] != 0 && dist[to] == int.MaxValue)
+                    {
+                        dist[to] = dist[v] + 1;
+                        from[to] = v;
+                        q.Enqueue(to);
+                    }
+                }
+            }
+            return (dist, from);
+        }
+
+        public static List<int> GetPathBFS(int[] from, int start, int finish)
+        {
+            List<int> path = new List<int>();
+            if (from[finish] == -1 && start != finish)
+            {
+                return path;
+            }    
+            for (int v = finish; v != -1; v = from[v])
+            {
+                path.Add(v);
+            }
+            path.Reverse();
             return path;
         }
     }

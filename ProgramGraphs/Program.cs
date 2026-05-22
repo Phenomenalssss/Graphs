@@ -105,7 +105,7 @@ namespace ProgramGraphs
                         }
                     case 3:
                         {
-                            string path = @"D:\Phenomenals\University\Построение и анализ алгоритмов\forExerciseThreeIn15LAB.txt";
+                            string path = @"D:\Phenomenals\University\Построение и анализ алгоритмов\forExerciseThreeAndFourIn15LAB.txt";
                             if (File.Exists(path))
                             {
                                 string[] edges = File.ReadAllLines(path);
@@ -114,7 +114,7 @@ namespace ProgramGraphs
                                 Graph.PrintAdjacencyList(graph);
                                 HashSet<int> visited = new HashSet<int>();
                                 Console.Write("Обход в глубину: ");
-                                foreach(var vertex in graph.Keys)
+                                foreach (var vertex in graph.Keys)
                                 {
                                     if (!visited.Contains(vertex))
                                     {
@@ -127,7 +127,7 @@ namespace ProgramGraphs
                         }
                     case 4:
                         {
-                            string path = @"D:\Phenomenals\University\Построение и анализ алгоритмов\forExerciseThreeIn15LAB.txt";
+                            string path = @"D:\Phenomenals\University\Построение и анализ алгоритмов\forExerciseThreeAndFourIn15LAB.txt";
                             if (File.Exists(path))
                             {
                                 string[] edges = File.ReadAllLines(path);
@@ -138,7 +138,7 @@ namespace ProgramGraphs
                                 int A = Convert.ToInt32(Console.ReadLine());
                                 Console.Write("Введите вершину B = ");
                                 int B = Convert.ToInt32(Console.ReadLine());
-                                List<int> pathFromAToB = Graph.GetPath(graph, A, B);
+                                List<int> pathFromAToB = Graph.GetPathDFS(graph, A, B);
                                 if (pathFromAToB.Count > 0)
                                 {
                                     ColorPrint($"Путь от {A} до {B} существует\n", ConsoleColor.Green);
@@ -154,6 +154,36 @@ namespace ProgramGraphs
                         }
                     case 5:
                         {
+                            string path = @"D:\Phenomenals\University\Построение и анализ алгоритмов\forExerciseFiveIn15LAB.txt";
+                            if (File.Exists(path))
+                            {
+                                string[] tempEdges = File.ReadAllLines(path);
+                                string[] pathFromTo = tempEdges.LastOrDefault().Split(" ");
+                                int[,] matrix = new int[Convert.ToInt32(tempEdges.FirstOrDefault()), Convert.ToInt32(tempEdges.FirstOrDefault())];
+                                for (int i = 1; i < tempEdges.Length - 1; i++)
+                                {
+                                    string[] numbers = tempEdges[i].Split();
+                                    for (int j = 0; j < numbers.Length; j++)
+                                    {
+                                        matrix[i - 1, j] = Convert.ToInt32(numbers[j]);
+                                    }
+                                }
+                                Console.WriteLine("Матрица:");
+                                MatrixPrint(matrix);
+                                var (dist, from) = Graph.BFS(matrix, Convert.ToInt32(pathFromTo[0]) - 1);
+                                Console.Write("Обход в ширину: ");
+                                ColorPrint($"{string.Join(" ", dist)}\n", ConsoleColor.Yellow);
+                                var pathFromAToB = Graph.GetPathBFS(from, Convert.ToInt32(pathFromTo[0]) - 1, Convert.ToInt32(pathFromTo[1]) - 1);
+                                if (pathFromAToB.Count > 0)
+                                {
+                                    ColorPrint($"Путь от {pathFromTo[0]} до {pathFromTo[1]} существует\n", ConsoleColor.Green);
+                                    ColorPrint($"Минимальный путь от {pathFromTo[0]} до {pathFromTo[1]} = {pathFromAToB.Count} ({string.Join(" -> ", pathFromAToB.Select(x => x + 1))})\n", ConsoleColor.Yellow);
+                                }
+                                else
+                                {
+                                    ColorPrint($"Путь от {pathFromTo[0]} до {pathFromTo[1]} не существует\n", ConsoleColor.Red);
+                                }
+                            }
                             break;
                         }
                     default:
