@@ -215,5 +215,36 @@
             path.Reverse();
             return path;
         }
+
+        public static int[] Dijkstra(List<int>[] graph, int[] fuelCost)
+        {
+            int[] dist = new int[graph.Length];
+            for (int i = 0; i < dist.Length; i++)
+            {
+                dist[i] = int.MaxValue;
+            }
+            dist[0] = 0;
+            bool[] visited = new bool[graph.Length];
+            for (int i = 0; i < graph.Length; i++)
+            {
+                int nearest = -1;
+                for (int v = 0; v < graph.Length; v++)
+                {
+                    if (!visited[v] && (nearest == -1 || dist[nearest] > dist[v]))
+                    {
+                        nearest = v;
+                    }
+                }
+                visited[nearest] = true;
+                foreach(int to in graph[nearest])
+                {
+                    if (dist[to] > dist[nearest] + fuelCost[nearest])
+                    {
+                        dist[to] = dist[nearest] + fuelCost[nearest];
+                    }
+                }
+            }
+            return dist;
+        }
     }
 }

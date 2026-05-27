@@ -1,4 +1,5 @@
 ﻿using Graphs;
+using System.Globalization;
 
 namespace ProgramGraphs
 {
@@ -61,6 +62,9 @@ namespace ProgramGraphs
                     "3. Рекурсивный алгоритм обхода графа в глубину\n" +
                     "4. Проверить существование пути от A до B\n" +
                     "5. Минимальный путь между двумя вершинами в неориентированном графе\n" +
+                    "6. Заправки\n" +
+                    "7. Алгоритм Форда-Беллмана\n" +
+                    "8. Алгоритм Флойда\n" +
                     ">> ");
                 int exercise = Convert.ToInt32(Console.ReadLine());
                 switch (exercise)
@@ -184,6 +188,65 @@ namespace ProgramGraphs
                                     ColorPrint($"Путь от {pathFromTo[0]} до {pathFromTo[1]} не существует\n", ConsoleColor.Red);
                                 }
                             }
+                            break;
+                        }
+                    case 6:
+                        {
+                            string path = @"D:\Phenomenals\University\Построение и анализ алгоритмов\forExerciseOneIn16LAB.txt";
+                            if (File.Exists(path))
+                            {
+                                string[] file = File.ReadAllLines(path);
+                                int countCity = Convert.ToInt32(file.FirstOrDefault());
+                                int[] fuelCost = new int[countCity];
+                                string[] numbers = file[1].Split(" ");
+                                for (int i = 0; i < fuelCost.Length; i++)
+                                {
+                                    fuelCost[i] = Convert.ToInt32(numbers[i]);
+                                }
+                                List<int>[] graph = new List<int>[countCity];
+                                for (int i = 0; i < graph.Length; i++)
+                                {
+                                    graph[i] = new List<int>();
+                                }
+                                int roads = Convert.ToInt32(file[2]);
+                                for (int i = 0, k = 3; i < roads; i++)
+                                {
+                                    string digits = file[k];
+                                    string[] row = digits.Split(" ");
+                                    k++;
+
+                                    int a = Convert.ToInt32(row[0]) - 1;
+                                    int b = Convert.ToInt32(row[1]) - 1;
+
+                                    graph[a].Add(b);
+                                    graph[b].Add(a);
+                                }
+                                int[] dist = Graph.Dijkstra(graph, fuelCost);
+                                Console.Write("Стоимость маршрутов до каждого города: ");
+                                ColorPrint($"{string.Join(" ", dist)}\n", ConsoleColor.Yellow);
+                                string resultText = "\n";
+                                if (dist[countCity - 1] == int.MaxValue || dist[countCity - 1] < 0)
+                                {
+                                    ColorPrint("Добраться невозможно\n", ConsoleColor.Red);
+                                    ColorPrint($"Суммарная стоимость маршрута = -1\n", ConsoleColor.Yellow);
+                                    resultText += $"Добраться невозможно\nСуммарная стоимость маршрута = -1\n";
+                                }
+                                else
+                                {
+                                    ColorPrint("Добраться возможно\n", ConsoleColor.Green);
+                                    ColorPrint($"Суммарная стоимость маршрута = {dist[countCity - 1]}\n", ConsoleColor.Yellow);
+                                    resultText += $"Добраться возможно\nСуммарная стоимость маршрута = {dist[countCity - 1]}\n";
+                                }
+                                File.AppendAllText(path, resultText);
+                            }
+                            break;
+                        }
+                    case 7:
+                        {
+                            break;
+                        }
+                    case 8:
+                        {
                             break;
                         }
                     default:
